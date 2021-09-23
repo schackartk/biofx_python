@@ -48,7 +48,7 @@ def get_gc(seq: str) -> float:
     """ Calculate GC content"""
 
     return (seq.count('G') +
-    seq.count('C')) * 100 / len(seq) if seq else 0
+            seq.count('C')) * 100 / len(seq) if seq else 0
 
 
 # --------------------------------------------------
