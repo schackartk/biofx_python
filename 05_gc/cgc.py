@@ -6,9 +6,12 @@ Purpose: Compute GC content
 """
 
 import argparse
+import re
 import sys
 from typing import NamedTuple, TextIO
 from Bio import SeqIO
+from Bio.Seq import Seq
+from Bio.SeqRecord import SeqRecord
 
 
 class Args(NamedTuple):
@@ -44,26 +47,27 @@ def get_args() -> Args:
 
 
 # --------------------------------------------------
-def get_gc(seq: str) -> float:
+def get_gc(rec: SeqRecord) -> MySeq:
     """ Calculate GC content"""
 
-    if not seq:
-        return 0
-    
-    gc = len([base for base in seq.upper() if base in 'GC'])
+    pct = 0.
 
-    return(gc * 100) / len(seq)
+    if seq := str(rec.seq):
+        gc = len(re.findall('[GC]', seq.upper()))
+        pct = (gc * 100) / len(seq)
+
+    return MySeq(pct, rec.id)
 
 
 # --------------------------------------------------
 def test_get_gc() -> None:
     """ Test get_gc()"""
 
-    assert get_gc('C') == 100.
-    assert get_gc('G') == 100.
-    assert get_gc('CGCGCG') == 100.
-    assert get_gc('ATATAT') == 0.
-    assert get_gc('ATGC') == 50.
+    assert get_gc(SeqRecord(Seq(''), id='123')) == (0.0, '123')
+    assert get_gc(SeqRecord(Seq('C'), id='ABC')) == (100.0, 'ABC')
+    assert get_gc(SeqRecord(Seq('G'), id='XYZ')) == (100.0, 'XYZ')
+    assert get_gc(SeqRecord(Seq('ACTG'), id='JKL')) == (50.0, 'JKL')
+    assert get_gc(SeqRecord(Seq('GGCC'), id='DEF')) == (100.0, 'DEF')
 
 
 # --------------------------------------------------
@@ -74,11 +78,9 @@ def main() -> None:
 
     high = MySeq(0., '')
 
-    for rec in SeqIO.parse(args.file, 'fasta'):
-        pct = get_gc(rec.seq)
-
-        if pct > high.gc:
-            high = MySeq(pct, rec.id)
+    for seq in map(get_gc, SeqIO.parse(args.file, 'fasta')):
+        if seq.gc > high.gc:
+            high = seq
 
     print(f'{high.name} {high.gc:.6f}')
 
