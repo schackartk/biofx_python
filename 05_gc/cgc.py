@@ -7,7 +7,7 @@ Purpose: Compute GC content
 
 import argparse
 import sys
-from typing import NamedTuple, TextIO
+from typing import NamedTuple, TextIO, List, Tuple
 from Bio import SeqIO
 
 
@@ -56,15 +56,14 @@ def main() -> None:
 
     args = get_args()
 
-    recs = {}
+    recs: List[Tuple[float, str]] = []
 
     for rec in SeqIO.parse(args.file, 'fasta'):
-        recs[rec.id] = get_gc(str(rec.seq))
+        recs.append((get_gc(rec.seq) * 100, rec.id))
 
-    max_key = max(recs, key=lambda key: recs[key])
-    max_gc = recs[max_key] * 100
+    high = max(recs)
 
-    print(f'{max_key} {max_gc:.6f}')
+    print(f'{high[1]} {high[0]:.6f}')
 
 
 # --------------------------------------------------
