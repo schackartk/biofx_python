@@ -7,7 +7,7 @@ Purpose: Compute GC content
 
 import argparse
 import sys
-from typing import NamedTuple, TextIO, List
+from typing import NamedTuple, TextIO
 from Bio import SeqIO
 
 
@@ -74,8 +74,6 @@ def main() -> None:
 
         if pct > high.gc:
             high = MySeq(pct, rec.id)
-
-    high = max(recs)
 
     print(f'{high.name} {high.gc:.6f}')
 
