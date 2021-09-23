@@ -47,8 +47,12 @@ def get_args() -> Args:
 def get_gc(seq: str) -> float:
     """ Calculate GC content"""
 
-    return (seq.count('G') +
-            seq.count('C')) * 100 / len(seq) if seq else 0
+    if not seq:
+        return 0
+    
+    gc = len([base for base in seq.upper() if base in 'GC'])
+
+    return(gc * 100) / len(seq)
 
 
 # --------------------------------------------------
