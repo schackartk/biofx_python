@@ -47,18 +47,19 @@ def get_args() -> Args:
 def get_gc(seq: str) -> float:
     """ Calculate GC content"""
 
-    return (seq.count('G') + seq.count('C')) / len(seq)
+    return (seq.count('G') +
+    seq.count('C')) * 100 / len(seq) if seq else 0
 
 
 # --------------------------------------------------
 def test_get_gc() -> None:
     """ Test get_gc()"""
 
-    assert get_gc('C') == 1.
-    assert get_gc('G') == 1.
-    assert get_gc('CGCGCG') == 1.
-    assert get_gc('ATATAT') == 0.0
-    assert get_gc('ATGC') == 0.5
+    assert get_gc('C') == 100.
+    assert get_gc('G') == 100.
+    assert get_gc('CGCGCG') == 100.
+    assert get_gc('ATATAT') == 0.
+    assert get_gc('ATGC') == 50.
 
 
 # --------------------------------------------------
@@ -70,7 +71,7 @@ def main() -> None:
     high = MySeq(0., '')
 
     for rec in SeqIO.parse(args.file, 'fasta'):
-        pct = get_gc(rec.seq) * 100
+        pct = get_gc(rec.seq)
 
         if pct > high.gc:
             high = MySeq(pct, rec.id)
