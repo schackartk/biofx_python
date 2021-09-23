@@ -7,13 +7,20 @@ Purpose: Compute GC content
 
 import argparse
 import sys
-from typing import NamedTuple, TextIO, List, Tuple
+from typing import NamedTuple, TextIO, List
 from Bio import SeqIO
 
 
 class Args(NamedTuple):
     """ Command-line arguments """
     file: TextIO
+
+
+# --------------------------------------------------
+class MySeq(NamedTuple):
+    """ Sequence """
+    gc: float
+    name: str
 
 
 # --------------------------------------------------
@@ -47,6 +54,10 @@ def get_gc(seq: str) -> float:
 def test_get_gc() -> None:
     """ Test get_gc()"""
 
+    assert get_gc('C') == 1.
+    assert get_gc('G') == 1.
+    assert get_gc('CGCGCG') == 1.
+    assert get_gc('ATATAT') == 0.0
     assert get_gc('ATGC') == 0.5
 
 
@@ -56,14 +67,14 @@ def main() -> None:
 
     args = get_args()
 
-    recs: List[Tuple[float, str]] = []
+    recs: List[MySeq] = []
 
     for rec in SeqIO.parse(args.file, 'fasta'):
-        recs.append((get_gc(rec.seq) * 100, rec.id))
+        recs.append(MySeq(get_gc(rec.seq) * 100, rec.id))
 
     high = max(recs)
 
-    print(f'{high[1]} {high[0]:.6f}')
+    print(f'{high.name} {high.gc:.6f}')
 
 
 # --------------------------------------------------
