@@ -67,10 +67,13 @@ def main() -> None:
 
     args = get_args()
 
-    recs: List[MySeq] = []
+    high = MySeq(0., '')
 
     for rec in SeqIO.parse(args.file, 'fasta'):
-        recs.append(MySeq(get_gc(rec.seq) * 100, rec.id))
+        pct = get_gc(rec.seq) * 100
+
+        if pct > high.gc:
+            high = MySeq(pct, rec.id)
 
     high = max(recs)
 
