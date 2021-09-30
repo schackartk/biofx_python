@@ -6,6 +6,7 @@ Purpose: Calculate hamming distance
 """
 
 import argparse
+from itertools import zip_longest
 from typing import NamedTuple
 
 
@@ -36,9 +37,7 @@ def get_args() -> Args:
 def get_dist(seq1: str, seq2: str) -> int:
     """ Calculate Hamming distance """
 
-    dist = abs(len(seq1) - len(seq2))
-
-    dist += sum(map(lambda x: x[0] != x[1], zip(seq1, seq2)))
+    dist = sum(map(lambda x: x[0] != x[1], zip_longest(seq1, seq2)))
 
     return dist
 
