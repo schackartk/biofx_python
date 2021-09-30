@@ -40,9 +40,7 @@ def get_dist(args: Args) -> int:
     seq2 = args.seq2
     dist = abs(len(seq1) - len(seq2))
 
-    for i in range(min(len(seq1), len(seq2))):
-        if seq1[i] != seq2[i]:
-            dist += 1
+    dist += sum(map(lambda x: x[0] != x[1], zip(seq1, seq2)))
 
     return dist
 
