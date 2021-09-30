@@ -33,11 +33,9 @@ def get_args() -> Args:
 
 
 # --------------------------------------------------
-def get_dist(args: Args) -> int:
+def get_dist(seq1: str, seq2: str) -> int:
     """ Calculate Hamming distance """
 
-    seq1 = args.seq1
-    seq2 = args.seq2
     dist = abs(len(seq1) - len(seq2))
 
     dist += sum(map(lambda x: x[0] != x[1], zip(seq1, seq2)))
@@ -46,12 +44,22 @@ def get_dist(args: Args) -> int:
 
 
 # --------------------------------------------------
+def test_get_dist() -> None:
+    """ test get_dist() """
+
+    assert get_dist('ATGC', 'ATGC') == 0
+    assert get_dist('ATGC', 'ATGG') == 1
+    assert get_dist('ATGC', 'ATG') == 1
+    assert get_dist('ATGC', 'AGG') == 2
+
+
+# --------------------------------------------------
 def main() -> None:
     """ Make a jazz noise here """
 
     args = get_args()
 
-    print(get_dist(args))
+    print(get_dist(args.seq1, args.seq2))
 
 
 # --------------------------------------------------
