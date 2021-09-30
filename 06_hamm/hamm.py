@@ -6,8 +6,9 @@ Purpose: Calculate hamming distance
 """
 
 import argparse
-from itertools import zip_longest
-from typing import NamedTuple, Tuple
+import operator
+from itertools import starmap, zip_longest
+from typing import NamedTuple
 
 
 class Args(NamedTuple):
@@ -34,26 +35,10 @@ def get_args() -> Args:
 
 
 # --------------------------------------------------
-def not_same(t: Tuple) -> bool:
-    """ Compare tuple elements """
-
-    return t[0] != t[1]
-
-
-# --------------------------------------------------
-def test_not_same() -> None:
-    """ Test not_same()"""
-
-    assert not_same(('A', 'A')) is False
-    assert not_same(('A', 'T')) is True
-    assert not_same(('A', None)) is True
-
-
-# --------------------------------------------------
 def get_dist(seq1: str, seq2: str) -> int:
     """ Calculate Hamming distance """
 
-    return sum(map(not_same, zip_longest(seq1, seq2)))
+    return sum(starmap(operator.ne, zip_longest(seq1, seq2)))
 
 
 # --------------------------------------------------
